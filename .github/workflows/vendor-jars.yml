@@ -1,0 +1,27 @@
+name: vendor-jars
+# Publishes the Delta Lake jars as a release asset, for environments that can't reach Maven Central
+# (the pipeline loads jars from LAKEHOUSE_JARS if set, otherwise from Maven via spark.jars.packages).
+on: workflow_dispatch
+
+permissions:
+  contents: write
+
+jobs:
+  jars:
+    runs-on: ubuntu-24.04
+    env:
+      DELTA: "4.0.1"
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          mkdir jars
+          base=https://repo1.maven.org/maven2/io/delta
+          curl -sSfL -o jars/delta-spark_2.13-$DELTA.jar $base/delta-spark_2.13/$DELTA/delta-spark_2.13-$DELTA.jar
+          curl -sSfL -o jars/delta-storage-$DELTA.jar $base/delta-storage/$DELTA/delta-storage-$DELTA.jar
+          sha256sum jars/*.jar | tee jars/SHA256SUMS
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "deps-delta-$DELTA" jars/* --title "Delta Lake $DELTA jars" \
+            --notes "delta-spark_2.13 and delta-storage $DELTA from Maven Central, for offline Spark sessions." || \
+          gh release upload "deps-delta-$DELTA" jars/* --clobber
