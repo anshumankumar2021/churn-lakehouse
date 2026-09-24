@@ -1,0 +1,1187 @@
+{
+  "dataset": {
+    "name": "Online Retail (UCI, Chen et al. 2012)",
+    "rows": 541909,
+    "daily_files": 305,
+    "invoices": 25898,
+    "customers": 4372,
+    "products": 3958,
+    "countries": 38,
+    "return_lines": 9251,
+    "anonymous_lines": 135035,
+    "first_day": "2010-12-01",
+    "last_day": "2011-12-09"
+  },
+  "tables": {
+    "bronze": 541909,
+    "silver": 536639,
+    "quarantine": 2
+  },
+  "quarantine_reasons": {
+    "negative or missing price": 2
+  },
+  "runs": {
+    "backfill": {
+      "kind": "backfill",
+      "first_day": "2010-12-01",
+      "last_day": "2011-10-31",
+      "days": 271,
+      "bronze_rows": 431673,
+      "silver_inserted": 428050,
+      "quarantined": 2,
+      "duplicates": 3621,
+      "already_loaded": 0,
+      "bronze_s": 18.28,
+      "silver_s": 25.06,
+      "total_s": 48.16,
+      "warnings": [],
+      "silver_version": 0
+    },
+    "daily": [
+      {
+        "kind": "daily",
+        "first_day": "2011-11-01",
+        "last_day": "2011-11-01",
+        "days": 1,
+        "bronze_rows": 1786,
+        "silver_inserted": 1767,
+        "quarantined": 0,
+        "duplicates": 19,
+        "already_loaded": 0,
+        "bronze_s": 1.41,
+        "silver_s": 4.05,
+        "total_s": 6.96,
+        "warnings": [],
+        "silver_version": 1
+      },
+      {
+        "kind": "daily",
+        "first_day": "2011-11-02",
+        "last_day": "2011-11-02",
+        "days": 1,
+        "bronze_rows": 2632,
+        "silver_inserted": 2606,
+        "quarantined": 0,
+        "duplicates": 26,
+        "already_loaded": 0,
+        "bronze_s": 1.46,
+        "silver_s": 3.29,
+        "total_s": 6.28,
+        "warnings": [],
+        "silver_version": 2
+      },
+      {
+        "kind": "daily",
+        "first_day": "2011-11-03",
+        "last_day": "2011-11-03",
+        "days": 1,
+        "bronze_rows": 2419,
+        "silver_inserted": 2384,
+        "quarantined": 0,
+        "duplicates": 35,
+        "already_loaded": 0,
+        "bronze_s": 1.21,
+        "silver_s": 3.18,
+        "total_s": 5.76,
+        "warnings": [],
+        "silver_version": 3
+      },
+      {
+        "kind": "daily",
+        "first_day": "2011-11-04",
+        "last_day": "2011-11-04",
+        "days": 1,
+        "bronze_rows": 3011,
+        "silver_inserted": 2938,
+        "quarantined": 0,
+        "duplicates": 73,
+        "already_loaded": 0,
+        "bronze_s": 1.33,
+        "silver_s": 3.15,
+        "total_s": 5.82,
+        "warnings": [],
+        "silver_version": 4
+      },
+      {
+        "kind": "daily",
+        "first_day": "2011-11-06",
+        "last_day": "2011-11-06",
+        "days": 1,
+        "bronze_rows": 3437,
+        "silver_inserted": 3354,
+        "quarantined": 0,
+        "duplicates": 83,
+        "already_loaded": 0,
+        "bronze_s": 1.08,
+        "silver_s": 2.96,
+        "total_s": 5.74,
+        "warnings": [],
+        "silver_version": 5
+      },
+      {
+        "kind": "daily",
+        "first_day": "2011-11-07",
+        "last_day": "2011-11-07",
+        "days": 1,
+        "bronze_rows": 2099,
+        "silver_inserted": 2074,
+        "quarantined": 0,
+        "duplicates": 25,
+        "already_loaded": 0,
+        "bronze_s": 1.05,
+        "silver_s": 3.15,
+        "total_s": 5.77,
+        "warnings": [],
+        "silver_version": 6
+      },
+      {
+        "kind": "daily",
+        "first_day": "2011-11-08",
+        "last_day": "2011-11-08",
+        "days": 1,
+        "bronze_rows": 4070,
+        "silver_inserted": 4010,
+        "quarantined": 0,
+        "duplicates": 60,
+        "already_loaded": 0,
+        "bronze_s": 1.12,
+        "silver_s": 3.39,
+        "total_s": 5.91,
+        "warnings": [
+          "anonymous (no customer) share"
+        ],
+        "silver_version": 7
+      },
+      {
+        "kind": "daily",
+        "first_day": "2011-11-09",
+        "last_day": "2011-11-09",
+        "days": 1,
+        "bronze_rows": 2716,
+        "silver_inserted": 2676,
+        "quarantined": 0,
+        "duplicates": 40,
+        "already_loaded": 0,
+        "bronze_s": 1.03,
+        "silver_s": 3.25,
+        "total_s": 5.81,
+        "warnings": [],
+        "silver_version": 8
+      },
+      {
+        "kind": "daily",
+        "first_day": "2011-11-10",
+        "last_day": "2011-11-10",
+        "days": 1,
+        "bronze_rows": 3275,
+        "silver_inserted": 3243,
+        "quarantined": 0,
+        "duplicates": 32,
+        "already_loaded": 0,
+        "bronze_s": 1.16,
+        "silver_s": 3.3,
+        "total_s": 6.0,
+        "warnings": [],
+        "silver_version": 9
+      },
+      {
+        "kind": "daily",
+        "first_day": "2011-11-11",
+        "last_day": "2011-11-11",
+        "days": 1,
+        "bronze_rows": 4089,
+        "silver_inserted": 4036,
+        "quarantined": 0,
+        "duplicates": 53,
+        "already_loaded": 0,
+        "bronze_s": 2.63,
+        "silver_s": 3.93,
+        "total_s": 8.88,
+        "warnings": [
+          "anonymous (no customer) share"
+        ],
+        "silver_version": 10
+      },
+      {
+        "kind": "daily",
+        "first_day": "2011-11-13",
+        "last_day": "2011-11-13",
+        "days": 1,
+        "bronze_rows": 3018,
+        "silver_inserted": 2969,
+        "quarantined": 0,
+        "duplicates": 49,
+        "already_loaded": 0,
+        "bronze_s": 1.18,
+        "silver_s": 3.49,
+        "total_s": 6.31,
+        "warnings": [],
+        "silver_version": 11
+      },
+      {
+        "kind": "daily",
+        "first_day": "2011-11-14",
+        "last_day": "2011-11-14",
+        "days": 1,
+        "bronze_rows": 3597,
+        "silver_inserted": 3548,
+        "quarantined": 0,
+        "duplicates": 49,
+        "already_loaded": 0,
+        "bronze_s": 1.07,
+        "silver_s": 3.08,
+        "total_s": 5.72,
+        "warnings": [],
+        "silver_version": 12
+      },
+      {
+        "kind": "daily",
+        "first_day": "2011-11-15",
+        "last_day": "2011-11-15",
+        "days": 1,
+        "bronze_rows": 3445,
+        "silver_inserted": 3409,
+        "quarantined": 0,
+        "duplicates": 36,
+        "already_loaded": 0,
+        "bronze_s": 1.26,
+        "silver_s": 3.21,
+        "total_s": 5.87,
+        "warnings": [],
+        "silver_version": 13
+      },
+      {
+        "kind": "daily",
+        "first_day": "2011-11-16",
+        "last_day": "2011-11-16",
+        "days": 1,
+        "bronze_rows": 4195,
+        "silver_inserted": 4130,
+        "quarantined": 0,
+        "duplicates": 65,
+        "already_loaded": 0,
+        "bronze_s": 1.24,
+        "silver_s": 3.1,
+        "total_s": 5.98,
+        "warnings": [],
+        "silver_version": 14
+      },
+      {
+        "kind": "daily",
+        "first_day": "2011-11-17",
+        "last_day": "2011-11-17",
+        "days": 1,
+        "bronze_rows": 3621,
+        "silver_inserted": 3563,
+        "quarantined": 0,
+        "duplicates": 58,
+        "already_loaded": 0,
+        "bronze_s": 0.96,
+        "silver_s": 3.82,
+        "total_s": 7.16,
+        "warnings": [],
+        "silver_version": 15
+      },
+      {
+        "kind": "daily",
+        "first_day": "2011-11-18",
+        "last_day": "2011-11-18",
+        "days": 1,
+        "bronze_rows": 2920,
+        "silver_inserted": 2877,
+        "quarantined": 0,
+        "duplicates": 43,
+        "already_loaded": 0,
+        "bronze_s": 1.06,
+        "silver_s": 2.97,
+        "total_s": 5.57,
+        "warnings": [],
+        "silver_version": 16
+      },
+      {
+        "kind": "daily",
+        "first_day": "2011-11-20",
+        "last_day": "2011-11-20",
+        "days": 1,
+        "bronze_rows": 3334,
+        "silver_inserted": 3241,
+        "quarantined": 0,
+        "duplicates": 93,
+        "already_loaded": 0,
+        "bronze_s": 0.91,
+        "silver_s": 3.18,
+        "total_s": 5.57,
+        "warnings": [],
+        "silver_version": 17
+      },
+      {
+        "kind": "daily",
+        "first_day": "2011-11-21",
+        "last_day": "2011-11-21",
+        "days": 1,
+        "bronze_rows": 2930,
+        "silver_inserted": 2882,
+        "quarantined": 0,
+        "duplicates": 48,
+        "already_loaded": 0,
+        "bronze_s": 1.21,
+        "silver_s": 2.56,
+        "total_s": 5.71,
+        "warnings": [],
+        "silver_version": 18
+      },
+      {
+        "kind": "daily",
+        "first_day": "2011-11-22",
+        "last_day": "2011-11-22",
+        "days": 1,
+        "bronze_rows": 3967,
+        "silver_inserted": 3905,
+        "quarantined": 0,
+        "duplicates": 62,
+        "already_loaded": 0,
+        "bronze_s": 0.87,
+        "silver_s": 2.54,
+        "total_s": 5.58,
+        "warnings": [],
+        "silver_version": 19
+      },
+      {
+        "kind": "daily",
+        "first_day": "2011-11-23",
+        "last_day": "2011-11-23",
+        "days": 1,
+        "bronze_rows": 3619,
+        "silver_inserted": 3555,
+        "quarantined": 0,
+        "duplicates": 64,
+        "already_loaded": 0,
+        "bronze_s": 2.04,
+        "silver_s": 3.61,
+        "total_s": 8.07,
+        "warnings": [],
+        "silver_version": 20
+      },
+      {
+        "kind": "daily",
+        "first_day": "2011-11-24",
+        "last_day": "2011-11-24",
+        "days": 1,
+        "bronze_rows": 3766,
+        "silver_inserted": 3724,
+        "quarantined": 0,
+        "duplicates": 42,
+        "already_loaded": 0,
+        "bronze_s": 1.2,
+        "silver_s": 2.38,
+        "total_s": 5.53,
+        "warnings": [],
+        "silver_version": 21
+      },
+      {
+        "kind": "daily",
+        "first_day": "2011-11-25",
+        "last_day": "2011-11-25",
+        "days": 1,
+        "bronze_rows": 3125,
+        "silver_inserted": 3073,
+        "quarantined": 0,
+        "duplicates": 52,
+        "already_loaded": 0,
+        "bronze_s": 0.87,
+        "silver_s": 2.47,
+        "total_s": 5.55,
+        "warnings": [
+          "anonymous (no customer) share"
+        ],
+        "silver_version": 22
+      },
+      {
+        "kind": "daily",
+        "first_day": "2011-11-27",
+        "last_day": "2011-11-27",
+        "days": 1,
+        "bronze_rows": 2543,
+        "silver_inserted": 2429,
+        "quarantined": 0,
+        "duplicates": 114,
+        "already_loaded": 0,
+        "bronze_s": 0.92,
+        "silver_s": 2.41,
+        "total_s": 5.26,
+        "warnings": [],
+        "silver_version": 23
+      },
+      {
+        "kind": "daily",
+        "first_day": "2011-11-28",
+        "last_day": "2011-11-28",
+        "days": 1,
+        "bronze_rows": 3330,
+        "silver_inserted": 3275,
+        "quarantined": 0,
+        "duplicates": 55,
+        "already_loaded": 0,
+        "bronze_s": 0.89,
+        "silver_s": 2.42,
+        "total_s": 5.1,
+        "warnings": [],
+        "silver_version": 24
+      },
+      {
+        "kind": "daily",
+        "first_day": "2011-11-29",
+        "last_day": "2011-11-29",
+        "days": 1,
+        "bronze_rows": 4313,
+        "silver_inserted": 4238,
+        "quarantined": 0,
+        "duplicates": 75,
+        "already_loaded": 0,
+        "bronze_s": 0.95,
+        "silver_s": 2.28,
+        "total_s": 4.63,
+        "warnings": [],
+        "silver_version": 25
+      },
+      {
+        "kind": "daily",
+        "first_day": "2011-11-30",
+        "last_day": "2011-11-30",
+        "days": 1,
+        "bronze_rows": 3454,
+        "silver_inserted": 3437,
+        "quarantined": 0,
+        "duplicates": 17,
+        "already_loaded": 0,
+        "bronze_s": 1.16,
+        "silver_s": 2.1,
+        "total_s": 4.92,
+        "warnings": [],
+        "silver_version": 26
+      },
+      {
+        "kind": "daily",
+        "first_day": "2011-12-01",
+        "last_day": "2011-12-01",
+        "days": 1,
+        "bronze_rows": 2901,
+        "silver_inserted": 2881,
+        "quarantined": 0,
+        "duplicates": 20,
+        "already_loaded": 0,
+        "bronze_s": 1.0,
+        "silver_s": 1.9,
+        "total_s": 4.27,
+        "warnings": [],
+        "silver_version": 27
+      },
+      {
+        "kind": "daily",
+        "first_day": "2011-12-02",
+        "last_day": "2011-12-02",
+        "days": 1,
+        "bronze_rows": 2880,
+        "silver_inserted": 2840,
+        "quarantined": 0,
+        "duplicates": 40,
+        "already_loaded": 0,
+        "bronze_s": 0.9,
+        "silver_s": 2.16,
+        "total_s": 4.29,
+        "warnings": [],
+        "silver_version": 28
+      },
+      {
+        "kind": "daily",
+        "first_day": "2011-12-04",
+        "last_day": "2011-12-04",
+        "days": 1,
+        "bronze_rows": 2038,
+        "silver_inserted": 1982,
+        "quarantined": 0,
+        "duplicates": 56,
+        "already_loaded": 0,
+        "bronze_s": 1.14,
+        "silver_s": 2.1,
+        "total_s": 4.87,
+        "warnings": [],
+        "silver_version": 29
+      },
+      {
+        "kind": "daily",
+        "first_day": "2011-12-05",
+        "last_day": "2011-12-05",
+        "days": 1,
+        "bronze_rows": 5331,
+        "silver_inserted": 5292,
+        "quarantined": 0,
+        "duplicates": 39,
+        "already_loaded": 0,
+        "bronze_s": 2.06,
+        "silver_s": 3.88,
+        "total_s": 8.25,
+        "warnings": [],
+        "silver_version": 30
+      },
+      {
+        "kind": "daily",
+        "first_day": "2011-12-06",
+        "last_day": "2011-12-06",
+        "days": 1,
+        "bronze_rows": 3365,
+        "silver_inserted": 3313,
+        "quarantined": 0,
+        "duplicates": 52,
+        "already_loaded": 0,
+        "bronze_s": 0.89,
+        "silver_s": 2.45,
+        "total_s": 4.93,
+        "warnings": [],
+        "silver_version": 31
+      },
+      {
+        "kind": "daily",
+        "first_day": "2011-12-07",
+        "last_day": "2011-12-07",
+        "days": 1,
+        "bronze_rows": 2438,
+        "silver_inserted": 2406,
+        "quarantined": 0,
+        "duplicates": 32,
+        "already_loaded": 0,
+        "bronze_s": 0.89,
+        "silver_s": 2.29,
+        "total_s": 4.56,
+        "warnings": [],
+        "silver_version": 32
+      },
+      {
+        "kind": "daily",
+        "first_day": "2011-12-08",
+        "last_day": "2011-12-08",
+        "days": 1,
+        "bronze_rows": 4940,
+        "silver_inserted": 4907,
+        "quarantined": 0,
+        "duplicates": 33,
+        "already_loaded": 0,
+        "bronze_s": 1.18,
+        "silver_s": 2.16,
+        "total_s": 4.99,
+        "warnings": [
+          "anonymous (no customer) share"
+        ],
+        "silver_version": 33
+      },
+      {
+        "kind": "daily",
+        "first_day": "2011-12-09",
+        "last_day": "2011-12-09",
+        "days": 1,
+        "bronze_rows": 1632,
+        "silver_inserted": 1625,
+        "quarantined": 0,
+        "duplicates": 7,
+        "already_loaded": 0,
+        "bronze_s": 0.87,
+        "silver_s": 2.27,
+        "total_s": 4.98,
+        "warnings": [
+          "anonymous (no customer) share"
+        ],
+        "silver_version": 34
+      }
+    ],
+    "replay": {
+      "kind": "replay",
+      "first_day": "2011-12-05",
+      "last_day": "2011-12-09",
+      "days": 5,
+      "bronze_rows": 0,
+      "silver_inserted": 0,
+      "quarantined": 0,
+      "duplicates": 163,
+      "already_loaded": 17543,
+      "bronze_s": 0.54,
+      "silver_s": 2.15,
+      "total_s": 3.54,
+      "warnings": [],
+      "silver_version": 34
+    },
+    "daily_median_s": 5.71,
+    "daily_p95_s": 8.07
+  },
+  "data_quality": [
+    {
+      "check": "every input row is accounted for",
+      "severity": "critical",
+      "batches": 36,
+      "passed": 36,
+      "avg_value": 15544.8611,
+      "threshold": 431673.0
+    },
+    {
+      "check": "line_id unique in silver",
+      "severity": "critical",
+      "batches": 36,
+      "passed": 36,
+      "avg_value": 0.0,
+      "threshold": 0.0
+    },
+    {
+      "check": "no nulls in required silver columns",
+      "severity": "critical",
+      "batches": 36,
+      "passed": 36,
+      "avg_value": 0.0,
+      "threshold": 0.0
+    },
+    {
+      "check": "anonymous (no customer) share",
+      "severity": "warning",
+      "batches": 36,
+      "passed": 31,
+      "avg_value": 0.2381,
+      "threshold": 0.4
+    },
+    {
+      "check": "quarantined share of batch",
+      "severity": "warning",
+      "batches": 36,
+      "passed": 36,
+      "avg_value": 0.0,
+      "threshold": 0.01
+    },
+    {
+      "check": "return lines share",
+      "severity": "warning",
+      "batches": 36,
+      "passed": 36,
+      "avg_value": 0.0136,
+      "threshold": 0.05
+    }
+  ],
+  "gold": {
+    "last_transaction_date": "2011-12-09",
+    "snapshots": {
+      "2011-03-01": {
+        "customers": 1680,
+        "churn_rate": 0.4333
+      },
+      "2011-04-01": {
+        "customers": 2132,
+        "churn_rate": 0.4587
+      },
+      "2011-05-01": {
+        "customers": 2432,
+        "churn_rate": 0.4626
+      },
+      "2011-06-01": {
+        "customers": 2716,
+        "churn_rate": 0.5077
+      },
+      "2011-07-01": {
+        "customers": 2958,
+        "churn_rate": 0.5061
+      },
+      "2011-08-01": {
+        "customers": 3145,
+        "churn_rate": 0.483
+      },
+      "2011-09-01": {
+        "customers": 3314,
+        "churn_rate": 0.439
+      },
+      "2011-12-10": {
+        "customers": 4335,
+        "churn_rate": null
+      }
+    },
+    "silver_version": 34,
+    "seconds": 21.8
+  },
+  "model": {
+    "selected_model": "gradient_boosted_trees",
+    "results": {
+      "recency_rule": {
+        "validation": {
+          "roc_auc": 0.7009,
+          "pr_auc": 0.677,
+          "base_rate": 0.483,
+          "n": 3145,
+          "precision_top10": 0.781,
+          "lift_top10": 1.617,
+          "recall_top10": 0.1619,
+          "precision_top20": 0.7472,
+          "lift_top20": 1.547,
+          "recall_top20": 0.3094
+        },
+        "test": {
+          "roc_auc": 0.6843,
+          "pr_auc": 0.6058,
+          "base_rate": 0.439,
+          "n": 3314,
+          "precision_top10": 0.6717,
+          "lift_top10": 1.53,
+          "recall_top10": 0.1533,
+          "precision_top20": 0.6742,
+          "lift_top20": 1.536,
+          "recall_top20": 0.3072
+        }
+      },
+      "logistic_regression": {
+        "validation": {
+          "roc_auc": 0.7606,
+          "pr_auc": 0.7072,
+          "base_rate": 0.483,
+          "n": 3145,
+          "precision_top10": 0.7714,
+          "lift_top10": 1.597,
+          "recall_top10": 0.16,
+          "precision_top20": 0.7568,
+          "lift_top20": 1.567,
+          "recall_top20": 0.3134
+        },
+        "test": {
+          "roc_auc": 0.7481,
+          "pr_auc": 0.6479,
+          "base_rate": 0.439,
+          "n": 3314,
+          "precision_top10": 0.6928,
+          "lift_top10": 1.578,
+          "recall_top10": 0.1581,
+          "precision_top20": 0.6923,
+          "lift_top20": 1.577,
+          "recall_top20": 0.3155
+        }
+      },
+      "gradient_boosted_trees": {
+        "validation": {
+          "roc_auc": 0.777,
+          "pr_auc": 0.737,
+          "base_rate": 0.483,
+          "n": 3145,
+          "precision_top10": 0.8063,
+          "lift_top10": 1.669,
+          "recall_top10": 0.1672,
+          "precision_top20": 0.7886,
+          "lift_top20": 1.633,
+          "recall_top20": 0.3265
+        },
+        "test": {
+          "roc_auc": 0.7489,
+          "pr_auc": 0.6515,
+          "base_rate": 0.439,
+          "n": 3314,
+          "precision_top10": 0.6898,
+          "lift_top10": 1.571,
+          "recall_top10": 0.1574,
+          "precision_top20": 0.6878,
+          "lift_top20": 1.567,
+          "recall_top20": 0.3134
+        }
+      }
+    },
+    "feature_importance": {
+      "distinct_products": 0.1306,
+      "avg_items_per_order": 0.1222,
+      "avg_order_value": 0.0958,
+      "active_months": 0.0931,
+      "monetary": 0.0704,
+      "return_rate": 0.0651,
+      "spend_90d": 0.0565,
+      "orders_per_month": 0.0469,
+      "spend_trend": 0.0459,
+      "frequency": 0.0445,
+      "avg_days_between_orders": 0.0418,
+      "recency_days": 0.0373,
+      "overdue_ratio": 0.0353,
+      "active_month_share": 0.0305,
+      "tenure_days": 0.0269,
+      "spend_prev_90d": 0.0246,
+      "orders_90d": 0.0138,
+      "is_uk": 0.0133,
+      "orders_30d": 0.0057
+    },
+    "lift_curve": {
+      "model": [
+        {
+          "top_share": 0.1,
+          "captured_churners": 0.1574
+        },
+        {
+          "top_share": 0.2,
+          "captured_churners": 0.3134
+        },
+        {
+          "top_share": 0.3,
+          "captured_churners": 0.4625
+        },
+        {
+          "top_share": 0.4,
+          "captured_churners": 0.5897
+        },
+        {
+          "top_share": 0.5,
+          "captured_churners": 0.7045
+        },
+        {
+          "top_share": 0.6,
+          "captured_churners": 0.8137
+        },
+        {
+          "top_share": 0.7,
+          "captured_churners": 0.8962
+        },
+        {
+          "top_share": 0.8,
+          "captured_churners": 0.9601
+        },
+        {
+          "top_share": 0.9,
+          "captured_churners": 0.9876
+        },
+        {
+          "top_share": 1.0,
+          "captured_churners": 1.0
+        }
+      ],
+      "recency_rule": [
+        {
+          "top_share": 0.1,
+          "captured_churners": 0.1526
+        },
+        {
+          "top_share": 0.2,
+          "captured_churners": 0.3072
+        },
+        {
+          "top_share": 0.3,
+          "captured_churners": 0.4419
+        },
+        {
+          "top_share": 0.4,
+          "captured_churners": 0.5533
+        },
+        {
+          "top_share": 0.5,
+          "captured_churners": 0.6557
+        },
+        {
+          "top_share": 0.6,
+          "captured_churners": 0.756
+        },
+        {
+          "top_share": 0.7,
+          "captured_churners": 0.8241
+        },
+        {
+          "top_share": 0.8,
+          "captured_churners": 0.8893
+        },
+        {
+          "top_share": 0.9,
+          "captured_churners": 0.9464
+        },
+        {
+          "top_share": 1.0,
+          "captured_churners": 1.0
+        }
+      ]
+    },
+    "at_risk_customers": [
+      {
+        "customer_id": 17504,
+        "snapshot_date": "2011-12-10",
+        "churn_probability": 0.9741,
+        "recency_days": 207,
+        "frequency": 9,
+        "monetary": 2997.03,
+        "orders_90d": 0,
+        "spend_trend": 0.0
+      },
+      {
+        "customer_id": 16725,
+        "snapshot_date": "2011-12-10",
+        "churn_probability": 0.9675,
+        "recency_days": 303,
+        "frequency": 6,
+        "monetary": 756.82,
+        "orders_90d": 0,
+        "spend_trend": 0.0
+      },
+      {
+        "customer_id": 17850,
+        "snapshot_date": "2011-12-10",
+        "churn_probability": 0.9636,
+        "recency_days": 373,
+        "frequency": 34,
+        "monetary": 5391.21,
+        "orders_90d": 0,
+        "spend_trend": 0.0
+      },
+      {
+        "customer_id": 16446,
+        "snapshot_date": "2011-12-10",
+        "churn_probability": 0.9614,
+        "recency_days": 1,
+        "frequency": 2,
+        "monetary": 168472.5,
+        "orders_90d": 1,
+        "spend_trend": 168469.6
+      },
+      {
+        "customer_id": 15107,
+        "snapshot_date": "2011-12-10",
+        "churn_probability": 0.952,
+        "recency_days": 312,
+        "frequency": 6,
+        "monetary": 319.5,
+        "orders_90d": 0,
+        "spend_trend": 0.0
+      },
+      {
+        "customer_id": 17874,
+        "snapshot_date": "2011-12-10",
+        "churn_probability": 0.952,
+        "recency_days": 186,
+        "frequency": 6,
+        "monetary": 683.46,
+        "orders_90d": 0,
+        "spend_trend": 0.0
+      },
+      {
+        "customer_id": 15535,
+        "snapshot_date": "2011-12-10",
+        "churn_probability": 0.9484,
+        "recency_days": 174,
+        "frequency": 4,
+        "monetary": 502.9,
+        "orders_90d": 0,
+        "spend_trend": -0.992
+      },
+      {
+        "customer_id": 15881,
+        "snapshot_date": "2011-12-10",
+        "churn_probability": 0.9479,
+        "recency_days": 313,
+        "frequency": 5,
+        "monetary": 501.39,
+        "orders_90d": 0,
+        "spend_trend": 0.0
+      },
+      {
+        "customer_id": 17912,
+        "snapshot_date": "2011-12-10",
+        "churn_probability": 0.9423,
+        "recency_days": 311,
+        "frequency": 5,
+        "monetary": 310.06,
+        "orders_90d": 0,
+        "spend_trend": 0.0
+      },
+      {
+        "customer_id": 17291,
+        "snapshot_date": "2011-12-10",
+        "churn_probability": 0.9421,
+        "recency_days": 309,
+        "frequency": 1,
+        "monetary": 550.8,
+        "orders_90d": 0,
+        "spend_trend": 0.0
+      },
+      {
+        "customer_id": 15100,
+        "snapshot_date": "2011-12-10",
+        "churn_probability": 0.9391,
+        "recency_days": 334,
+        "frequency": 3,
+        "monetary": 876.0,
+        "orders_90d": 0,
+        "spend_trend": 0.0
+      },
+      {
+        "customer_id": 16897,
+        "snapshot_date": "2011-12-10",
+        "churn_probability": 0.9367,
+        "recency_days": 300,
+        "frequency": 2,
+        "monetary": 289.78,
+        "orders_90d": 0,
+        "spend_trend": 0.0
+      },
+      {
+        "customer_id": 17580,
+        "snapshot_date": "2011-12-10",
+        "churn_probability": 0.9331,
+        "recency_days": 253,
+        "frequency": 3,
+        "monetary": 212.77,
+        "orders_90d": 0,
+        "spend_trend": 0.0
+      },
+      {
+        "customer_id": 12988,
+        "snapshot_date": "2011-12-10",
+        "churn_probability": 0.9313,
+        "recency_days": 293,
+        "frequency": 1,
+        "monetary": 505.82,
+        "orders_90d": 0,
+        "spend_trend": 0.0
+      },
+      {
+        "customer_id": 12888,
+        "snapshot_date": "2011-12-10",
+        "churn_probability": 0.9304,
+        "recency_days": 215,
+        "frequency": 2,
+        "monetary": 354.12,
+        "orders_90d": 0,
+        "spend_trend": 0.0
+      },
+      {
+        "customer_id": 12866,
+        "snapshot_date": "2011-12-10",
+        "churn_probability": 0.93,
+        "recency_days": 284,
+        "frequency": 1,
+        "monetary": 499.12,
+        "orders_90d": 0,
+        "spend_trend": 0.0
+      },
+      {
+        "customer_id": 16217,
+        "snapshot_date": "2011-12-10",
+        "churn_probability": 0.9276,
+        "recency_days": 236,
+        "frequency": 2,
+        "monetary": 304.25,
+        "orders_90d": 0,
+        "spend_trend": 0.0
+      },
+      {
+        "customer_id": 17142,
+        "snapshot_date": "2011-12-10",
+        "churn_probability": 0.9266,
+        "recency_days": 240,
+        "frequency": 1,
+        "monetary": 579.0,
+        "orders_90d": 0,
+        "spend_trend": 0.0
+      },
+      {
+        "customer_id": 12565,
+        "snapshot_date": "2011-12-10",
+        "churn_probability": 0.9262,
+        "recency_days": 289,
+        "frequency": 1,
+        "monetary": 145.92,
+        "orders_90d": 0,
+        "spend_trend": 0.0
+      },
+      {
+        "customer_id": 16812,
+        "snapshot_date": "2011-12-10",
+        "churn_probability": 0.9255,
+        "recency_days": 361,
+        "frequency": 1,
+        "monetary": 479.35,
+        "orders_90d": 0,
+        "spend_trend": 0.0
+      },
+      {
+        "customer_id": 16586,
+        "snapshot_date": "2011-12-10",
+        "churn_probability": 0.9253,
+        "recency_days": 249,
+        "frequency": 1,
+        "monetary": 463.95,
+        "orders_90d": 0,
+        "spend_trend": 0.0
+      },
+      {
+        "customer_id": 15109,
+        "snapshot_date": "2011-12-10",
+        "churn_probability": 0.9237,
+        "recency_days": 246,
+        "frequency": 1,
+        "monetary": 484.95,
+        "orders_90d": 0,
+        "spend_trend": 0.0
+      },
+      {
+        "customer_id": 18269,
+        "snapshot_date": "2011-12-10",
+        "churn_probability": 0.9226,
+        "recency_days": 367,
+        "frequency": 1,
+        "monetary": 168.6,
+        "orders_90d": 0,
+        "spend_trend": 0.0
+      },
+      {
+        "customer_id": 14431,
+        "snapshot_date": "2011-12-10",
+        "churn_probability": 0.9219,
+        "recency_days": 303,
+        "frequency": 1,
+        "monetary": 470.36,
+        "orders_90d": 0,
+        "spend_trend": 0.0
+      },
+      {
+        "customer_id": 14670,
+        "snapshot_date": "2011-12-10",
+        "churn_probability": 0.9204,
+        "recency_days": 281,
+        "frequency": 2,
+        "monetary": 392.86,
+        "orders_90d": 0,
+        "spend_trend": 0.0
+      }
+    ],
+    "scored_customers": 4335,
+    "seconds": 30.8
+  },
+  "table_versions": {
+    "bronze": 34,
+    "silver": 34,
+    "quarantine": 0,
+    "dq": 35,
+    "features": 0,
+    "scores": 0
+  },
+  "bench": {
+    "full_rebuild": {
+      "seconds": 10.62,
+      "rows": 536639
+    },
+    "incremental_day_median_s": 5.71,
+    "incremental_saving": 0.462,
+    "zorder": {
+      "rows": 8032080,
+      "copies": 20,
+      "queries": 25,
+      "optimize_seconds": 49.4,
+      "target_file_mb": 32,
+      "before": {
+        "files": 400,
+        "mb": 747.3,
+        "median_ms": 1154.0,
+        "p95_ms": 1390.8,
+        "median_files_read": 400,
+        "median_mb_read": 747.32
+      },
+      "after": {
+        "files": 22,
+        "mb": 659.2,
+        "median_ms": 211.7,
+        "p95_ms": 261.6,
+        "median_files_read": 1,
+        "median_mb_read": 30.18
+      }
+    }
+  }
+}
