@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Churn Lakehouse</title>
+<meta name="description" content="A PySpark + Delta Lake medallion pipeline over 541,909 real retail transactions: incremental MERGE, data-quality gates, Z-ordering, and an out-of-time churn model tracked in MLflow.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%231d2230'/%3E%3Crect x='7' y='19' width='18' height='5' rx='1.5' fill='%23b8743f'/%3E%3Crect x='9' y='13' width='14' height='5' rx='1.5' fill='%23a3adbb'/%3E%3Crect x='11' y='7' width='10' height='5' rx='1.5' fill='%23d9a520'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400..700&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<style>
+:root {
+  color-scheme: light;
+  --page: #f4f3ef; --paper: #fffefb; --paper-2: #f7f5f0; --sunk: #ebe8e1;
+  --ink: #1b1e27; --ink-2: #4a4f5c; --muted: #7a7e89;
+  --line: #e0ddd5; --line-2: #cdc9bf;
+  --accent: #2f5bd3; --accent-soft: rgba(47,91,211,.09);
+  --bronze: #a8662f; --silver: #7d8796; --gold: #b8860b;
+  --bronze-soft: rgba(168,102,47,.12); --silver-soft: rgba(125,135,150,.14); --gold-soft: rgba(184,134,11,.13);
+  --ok: #17803d; --ok-soft: rgba(23,128,61,.11); --warn: #a15c00; --warn-soft: rgba(214,130,20,.14); --bad: #b3261e;
+  --shadow: 0 1px 2px rgba(27,30,39,.05), 0 10px 28px rgba(27,30,39,.07);
+  --f-body: "Space Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --page: #11131a; --paper: #181b24; --paper-2: #1e222c; --sunk: #14161d;
+    --ink: #eceef3; --ink-2: #b8bcc8; --muted: #878c99; --line: #2a2e3a; --line-2: #3a3f4d;
+    --accent: #7ea0ff; --accent-soft: rgba(126,160,255,.13);
+    --bronze: #d99a62; --silver: #aab4c3; --gold: #e3b43c;
+    --bronze-soft: rgba(217,154,98,.14); --silver-soft: rgba(170,180,195,.13); --gold-soft: rgba(227,180,60,.13);
+    --ok: #5dd28a; --ok-soft: rgba(93,210,138,.12); --warn: #f2b24c; --warn-soft: rgba(242,178,76,.13); --bad: #ff8a80;
+    --shadow: 0 1px 2px rgba(0,0,0,.35), 0 12px 32px rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page: #11131a; --paper: #181b24; --paper-2: #1e222c; --sunk: #14161d;
+  --ink: #eceef3; --ink-2: #b8bcc8; --muted: #878c99; --line: #2a2e3a; --line-2: #3a3f4d;
+  --accent: #7ea0ff; --accent-soft: rgba(126,160,255,.13);
+  --bronze: #d99a62; --silver: #aab4c3; --gold: #e3b43c;
+  --bronze-soft: rgba(217,154,98,.14); --silver-soft: rgba(170,180,195,.13); --gold-soft: rgba(227,180,60,.13);
+  --ok: #5dd28a; --ok-soft: rgba(93,210,138,.12); --warn: #f2b24c; --warn-soft: rgba(242,178,76,.13); --bad: #ff8a80;
+  --shadow: 0 1px 2px rgba(0,0,0,.35), 0 12px 32px rgba(0,0,0,.35);
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--page); color: var(--ink); font: 16px/1.55 var(--f-body); }
+a { color: var(--accent); text-underline-offset: 3px; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.wrap { max-width: 1180px; margin: 0 auto; padding-inline: 20px; }
+.mono { font-family: var(--f-mono); font-size: .85em; }
+.card { background: var(--paper); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow); }
+.top { position: sticky; top: 0; z-index: 20; background: color-mix(in srgb, var(--page) 90%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+.top .wrap { display: flex; align-items: center; gap: 14px; height: 58px; }
+.brand { display: flex; align-items: center; gap: 10px; font-weight: 700; text-decoration: none; color: var(--ink); white-space: nowrap; }
+.top nav { display: flex; gap: 2px; margin-left: auto; }
+.top nav a { color: var(--ink-2); text-decoration: none; font-size: 14.5px; padding: 6px 10px; border-radius: 8px; font-weight: 500; }
+.top nav a:hover { background: var(--sunk); color: var(--ink); }
+.icon-btn { width: 36px; height: 36px; border-radius: 9px; border: 1px solid var(--line); background: var(--paper); display: grid; place-items: center; cursor: pointer; color: var(--ink-2); flex: none; }
+@media (max-width: 760px) { .top nav a.hide-sm { display: none; } }
+@media (max-width: 440px) { .top nav a:not(.keep) { display: none; } }
+.hero { padding: 40px 0 20px; }
+.eyebrow { font: 600 12.5px/1 var(--f-mono); color: var(--gold); text-transform: uppercase; letter-spacing: .07em; }
+h1 { font-size: clamp(30px, 4.8vw, 50px); line-height: 1.05; letter-spacing: -.03em; font-weight: 700; margin: 14px 0 14px; max-width: 20ch; }
+.lede { font-size: 17.5px; color: var(--ink-2); max-width: 68ch; margin: 0; }
+.stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-top: 24px; }
+.stat { background: var(--paper); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; }
+.stat b { display: block; font-size: 27px; letter-spacing: -.02em; font-weight: 700; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.stat span { display: block; font-size: 13.5px; color: var(--muted); margin-top: 4px; line-height: 1.35; }
+@media (max-width: 860px) { .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+section { padding: 38px 0; border-top: 1px solid var(--line); }
+h2 { font-size: clamp(24px, 3.2vw, 32px); letter-spacing: -.02em; margin: 0 0 8px; line-height: 1.15; font-weight: 700; }
+.sub { color: var(--ink-2); max-width: 74ch; margin: 0 0 20px; }
+.flow { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; align-items: stretch; }
+@media (max-width: 900px) { .flow { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 460px) { .flow { grid-template-columns: minmax(0, 1fr); } }
+.layer { border-radius: 14px; padding: 14px; border: 1px solid var(--line); background: var(--paper); position: relative; }
+.layer .tag { font: 600 11.5px var(--f-mono); text-transform: uppercase; letter-spacing: .06em; padding: 3px 7px; border-radius: 6px; display: inline-block; }
+.layer h3 { margin: 8px 0 4px; font-size: 16px; }
+.layer .big { font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
+.layer p { margin: 6px 0 0; font-size: 13px; color: var(--ink-2); line-height: 1.45; }
+.l-land .tag { background: var(--sunk); color: var(--ink-2); }
+.l-bronze { border-color: color-mix(in srgb, var(--bronze) 40%, var(--line)); } .l-bronze .tag { background: var(--bronze-soft); color: var(--bronze); }
+.l-silver { border-color: color-mix(in srgb, var(--silver) 45%, var(--line)); } .l-silver .tag { background: var(--silver-soft); color: var(--silver); }
+.l-gold { border-color: color-mix(in srgb, var(--gold) 45%, var(--line)); } .l-gold .tag { background: var(--gold-soft); color: var(--gold); }
+.l-model .tag { background: var(--accent-soft); color: var(--accent); }
+.grid2 { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 16px; }
+@media (max-width: 900px) { .grid2 { grid-template-columns: minmax(0, 1fr); } }
+.panel { padding: 18px; min-width: 0; }
+.panel h3 { margin: 0 0 4px; font-size: 16px; }
+.cap { font-size: 13.5px; color: var(--muted); margin: 0 0 12px; }
+.chart { width: 100%; height: auto; display: block; overflow: visible; }
+.chart text { font: 11px var(--f-mono); fill: var(--muted); }
+.chart .grid { stroke: var(--line); stroke-width: 1; }
+.key { display: flex; gap: 14px; font-size: 13px; color: var(--ink-2); margin: 0 0 10px; flex-wrap: wrap; }
+.key i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; vertical-align: -1px; margin-right: 6px; }
+table.t { width: 100%; border-collapse: collapse; font-size: 14px; }
+table.t th, table.t td { padding: 8px 6px; border-bottom: 1px solid var(--line); text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+table.t th:first-child, table.t td:first-child { text-align: left; white-space: normal; }
+table.t th { font-size: 11.5px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
+table.t tr.best td { font-weight: 700; }
+.scroll { overflow-x: auto; }
+.pill { font: 600 11px var(--f-mono); padding: 3px 7px; border-radius: 6px; }
+.pill.ok { background: var(--ok-soft); color: var(--ok); } .pill.warn { background: var(--warn-soft); color: var(--warn); } .pill.crit { background: var(--accent-soft); color: var(--accent); }
+.ba { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+.ba > div { border-radius: 12px; padding: 12px 14px; background: var(--paper-2); border: 1px solid var(--line); }
+.ba b { display: block; font-size: 26px; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.ba span { font-size: 13px; color: var(--muted); }
+.ba .after { background: var(--gold-soft); border-color: color-mix(in srgb, var(--gold) 35%, var(--line)); }
+.fi { display: grid; grid-template-columns: 170px minmax(0, 1fr) 48px; gap: 8px; align-items: center; font-size: 13px; margin-bottom: 6px; }
+.fi .bar { height: 10px; background: var(--sunk); border-radius: 4px; position: relative; overflow: hidden; }
+.fi .bar i { position: absolute; inset: 0 auto 0 0; background: var(--gold); border-radius: 4px; }
+.fi .v { font: 500 11.5px var(--f-mono); color: var(--ink-2); text-align: right; }
+@media (max-width: 520px) { .fi { grid-template-columns: 120px minmax(0, 1fr) 42px; } .ba { grid-template-columns: minmax(0, 1fr); } .wrap { padding-inline: 16px; } }
+.risk { font: 600 12px var(--f-mono); }
+.cards3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+@media (max-width: 900px) { .cards3 { grid-template-columns: minmax(0, 1fr); } }
+.g { padding: 16px 18px; } .g h3 { margin: 0 0 6px; font-size: 15.5px; } .g p { margin: 0; font-size: 14px; color: var(--ink-2); }
+footer { padding: 28px 0 48px; border-top: 1px solid var(--line); color: var(--muted); font-size: 13.5px; }
+footer .wrap { display: flex; gap: 16px; flex-wrap: wrap; justify-content: space-between; }
+.tip { position: fixed; pointer-events: none; background: var(--ink); color: var(--paper); font: 500 12px var(--f-mono); padding: 6px 8px; border-radius: 6px; opacity: 0; transition: opacity .1s; z-index: 50; white-space: nowrap; }
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="brand" href="#"><svg width="26" height="26" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="#1d2230"/><rect x="7" y="19" width="18" height="5" rx="1.5" fill="#b8743f"/><rect x="9" y="13" width="14" height="5" rx="1.5" fill="#a3adbb"/><rect x="11" y="7" width="10" height="5" rx="1.5" fill="#d9a520"/></svg>Churn Lakehouse</a>
+  <nav><a href="#pipeline" class="hide-sm">Pipeline</a><a href="#quality" class="hide-sm">Quality</a><a href="#model">Model</a><a class="keep" href="https://github.com/anshumankumar2021/churn-lakehouse" target="_blank" rel="noopener">GitHub</a></nav>
+  <button class="icon-btn" id="theme" aria-label="Toggle dark mode"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+</div></header>
+<main>
+  <div class="wrap hero">
+    <div class="eyebrow">PySpark · Delta Lake · MLflow · real retail data</div>
+    <h1>Which customers are about to stop buying?</h1>
+    <p class="lede" id="lede">A medallion lakehouse over a year of real transactions from a UK online retailer: daily files land in bronze, are cleaned and merged into silver with quality gates, become customer features in gold, and feed a churn model evaluated on a month it never saw.</p>
+    <div class="stats" id="stats"></div>
+  </div>
+
+  <section id="pipeline"><div class="wrap">
+    <h2>Pipeline</h2>
+    <p class="sub">Every table is a Delta table: ACID writes, schema enforcement, and a version history that the gold layer pins, so any snapshot can be rebuilt exactly.</p>
+    <div class="flow" id="flow"></div>
+    <div class="grid2" style="margin-top:16px">
+      <div class="card panel"><h3>Daily incremental runs</h3><p class="cap" id="runcap"></p><div class="key"><span><i style="background:var(--bronze)"></i>bronze append</span><span><i style="background:var(--silver)"></i>silver MERGE + quality gate</span></div><div id="runchart"></div></div>
+      <div class="card panel"><h3>Incremental vs full rebuild</h3><p class="cap">One new day processed with MERGE, compared with rebuilding silver from all of bronze.</p><div id="incr"></div></div>
+    </div>
+  </div></section>
+
+  <section id="quality"><div class="wrap">
+    <h2>Data quality</h2>
+    <p class="sub">Every batch passes through the same gate. Critical checks stop the run before anything downstream is built; warnings are tracked over time. Rows that can't be trusted go to quarantine with a reason rather than disappearing.</p>
+    <div class="grid2">
+      <div class="card panel scroll"><h3>Checks across all batches</h3><p class="cap" id="dqcap"></p><table class="t" id="dq"></table></div>
+      <div class="card panel"><h3>What the gate caught</h3><p class="cap">Rows kept out of silver, and why.</p><div id="caught"></div></div>
+    </div>
+  </div></section>
+
+  <section id="layout"><div class="wrap">
+    <h2>Table layout: Z-ordering</h2>
+    <p class="sub" id="zsub"></p>
+    <div class="card panel" id="zorder"></div>
+  </div></section>
+
+  <section id="model"><div class="wrap">
+    <h2>Churn model</h2>
+    <p class="sub" id="msub"></p>
+    <div class="grid2">
+      <div class="card panel scroll"><h3>Out-of-time test</h3><p class="cap" id="testcap"></p><table class="t" id="mtab"></table></div>
+      <div class="card panel"><h3>Cumulative gains</h3><p class="cap">Share of next quarter's churners found by contacting the riskiest X% of customers.</p><div class="key"><span><i style="background:var(--gold)"></i>model</span><span><i style="background:var(--silver)"></i>recency rule</span><span><i style="background:var(--line-2)"></i>random</span></div><div id="gains"></div></div>
+    </div>
+    <div class="grid2" style="margin-top:16px">
+      <div class="card panel"><h3>What drives the prediction</h3><p class="cap" id="ficap"></p><div id="fi"></div></div>
+      <div class="card panel"><h3>Churn rate by snapshot</h3><p class="cap">Customers active before each date who didn't buy in the following 90 days.</p><div id="snaps"></div></div>
+    </div>
+    <div class="card panel scroll" style="margin-top:16px"><h3>Highest-risk customers today</h3><p class="cap" id="riskcap"></p><table class="t" id="risk"></table></div>
+  </div></section>
+
+  <section id="how"><div class="wrap">
+    <h2>How it works</h2>
+    <div class="cards3">
+      <div class="card g"><h3>Bronze: land as received</h3><p>Daily CSV drops are appended to Delta as strings with source file and ingest time. Files already loaded are skipped, so re-runs never duplicate a day.</p></div>
+      <div class="card g"><h3>Silver: MERGE, don't append</h3><p>Rows are typed with <span class="mono">try_cast</span> (a bad value quarantines one row instead of failing the batch), hashed into a <span class="mono">line_id</span>, and MERGEd, pruned to the affected month partitions.</p></div>
+      <div class="card g"><h3>Gold: point-in-time features</h3><p>Monthly snapshots of 19 behavioural features per customer, computed only from data before the snapshot, with a 90-day churn label. Built from a pinned silver version (time travel).</p></div>
+      <div class="card g"><h3>Quality gates</h3><p>Row reconciliation (every input row inserted, de-duplicated, already present or quarantined), unique keys, required columns, and drift warnings, stored as a Delta table.</p></div>
+      <div class="card g"><h3>Out-of-time evaluation</h3><p>Trained on March–July snapshots, model chosen on August, tested once on September. Spark ML pipelines logged to MLflow with metrics and the fitted model.</p></div>
+      <div class="card g"><h3>Reproducible</h3><p>CI downloads the data, runs the whole pipeline on a fresh Spark + Delta, runs unit tests on every layer, and fails if row counts or model metrics differ from the published ones.</p></div>
+    </div>
+    <p class="sub" style="margin-top:20px">Data: <a href="https://archive.ics.uci.edu/dataset/352/online+retail" target="_blank" rel="noopener">Online Retail</a> (Chen, Sain &amp; Guo, 2012), 1 Dec 2010 – 9 Dec 2011, CC0 via the <span class="mono">onlineretail</span> CRAN package. Customer IDs are the dataset's anonymised numbers.</p>
+  </div></section>
+</main>
+<footer><div class="wrap"><span>Built by Anshuman Kumar · PySpark, Delta Lake, Spark ML, MLflow · static dashboard of pipeline output</span><a href="https://github.com/anshumankumar2021/churn-lakehouse" target="_blank" rel="noopener">Source on GitHub</a></div></footer>
+<div class="tip" id="tip"></div>
+<script>
+(() => {
+  const $ = s => document.querySelector(s);
+  const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const fmt = n => n == null ? "–" : Number(n).toLocaleString("en-US");
+  const pct = (x, d = 1) => x == null ? "–" : (x * 100).toFixed(d) + "%";
+  const root = document.documentElement;
+  try { const t = localStorage.getItem("theme"); if (t) root.dataset.theme = t; } catch (e) {}
+  $("#theme").onclick = () => { const dark = root.dataset.theme ? root.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches; root.dataset.theme = dark ? "light" : "dark"; try { localStorage.setItem("theme", root.dataset.theme); } catch (e) {} };
+  const tip = $("#tip");
+  document.addEventListener("pointermove", e => { const t = e.target.closest("[data-tip]"); if (!t) { tip.style.opacity = 0; return; } tip.textContent = t.dataset.tip; tip.style.opacity = 1; tip.style.left = Math.min(e.clientX + 12, innerWidth - tip.offsetWidth - 8) + "px"; tip.style.top = (e.clientY + 14) + "px"; });
+  const NAMES = { recency_rule: "Recency rule (days since last order)", logistic_regression: "Logistic regression", gradient_boosted_trees: "Gradient-boosted trees" };
+  const FEAT = { recency_days: "days since last order", frequency: "orders", monetary: "total spend", tenure_days: "days as a customer", avg_order_value: "average order value", distinct_products: "distinct products", orders_90d: "orders, last 90 days", spend_90d: "spend, last 90 days", spend_prev_90d: "spend, 90–180 days ago", spend_trend: "spend trend", avg_days_between_orders: "days between orders", return_rate: "return rate", is_uk: "UK customer", orders_per_month: "orders per month", avg_items_per_order: "items per order", overdue_ratio: "overdue vs own rhythm", active_months: "active months", orders_30d: "orders, last 30 days", active_month_share: "share of months active" };
+
+  fetch("results.json").then(r => r.json()).then(R => {
+    const M = R.model, best = M.selected_model, T = M.results[best].test, rule = M.results.recency_rule.test, B = R.bench, runs = R.runs;
+    const z = B?.zorder;
+    $("#stats").innerHTML = [
+      [fmt(R.dataset.rows), `real transactions, ${R.dataset.daily_files} daily files, loaded incrementally`],
+      [B ? `${pct(B.incremental_saving, 0)}` : `${runs.daily_median_s}s`, B ? `less time to load a day with MERGE (${runs.daily_median_s}s) than a full rebuild (${B.full_rebuild.seconds}s)` : "median time to load one day"],
+      [z ? `${z.before.median_files_read} → ${z.after.median_files_read}` : "–", z ? `files read per customer lookup after Z-ordering (${z.before.files} → ${z.after.files} files)` : ""],
+      [`${pct(T.precision_top10, 0)}`, `of the 10% riskiest customers really churned, vs ${pct(T.base_rate, 0)} overall (AUC ${T.roc_auc})`],
+    ].map(([b, s]) => `<div class="stat"><b>${esc(b)}</b><span>${esc(s)}</span></div>`).join("");
+
+    const t = R.tables, q = R.quarantine_reasons || {}, bf = runs.backfill;
+    const dup = runs.daily.reduce((a, e) => a + e.duplicates, bf.duplicates);
+    const nq = Object.values(q).reduce((a, b) => a + b, 0);
+    const snapKeys = Object.keys(R.gold.snapshots);
+    const labelled = snapKeys.filter(k => R.gold.snapshots[k].churn_rate != null);
+    $("#flow").innerHTML = `
+      <div class="layer l-land"><span class="tag">landing</span><h3>Daily CSV drops</h3><div class="big">${R.dataset.daily_files}</div><p>one file per trading day, as an upstream system would deliver them</p></div>
+      <div class="layer l-bronze"><span class="tag">bronze</span><h3>Raw, append-only</h3><div class="big">${fmt(t.bronze)}</div><p>rows, all strings + lineage; ${R.table_versions.bronze + 1} Delta versions</p></div>
+      <div class="layer l-silver"><span class="tag">silver</span><h3>Typed, de-duplicated</h3><div class="big">${fmt(t.silver)}</div><p>${fmt(dup)} duplicate lines dropped, ${fmt(nq)} quarantined; ${R.table_versions.silver + 1} versions (MERGE per day)</p></div>
+      <div class="layer l-gold"><span class="tag">gold</span><h3>Customer features</h3><div class="big">${snapKeys.length}</div><p>monthly snapshots (${labelled.length} labelled) built from silver version ${R.gold.silver_version}</p></div>
+      <div class="layer l-model"><span class="tag">model</span><h3>Churn scores</h3><div class="big">${fmt(M.scored_customers)}</div><p>customers scored with ${esc(NAMES[best])}; logged to MLflow</p></div>`;
+
+    // daily run chart
+    const d = runs.daily, W = 560, H = 200, pad = 30, maxS = Math.max(...d.map(e => e.total_s)) * 1.1;
+    const bw = (W - pad) / d.length;
+    const y = v => H - 22 - (v / maxS) * (H - 40);
+    let svg = `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Seconds per daily run">`;
+    for (let g = 0; g <= maxS; g += Math.ceil(maxS / 4)) svg += `<line class="grid" x1="${pad}" x2="${W}" y1="${y(g)}" y2="${y(g)}"/><text x="${pad - 6}" y="${y(g) + 4}" text-anchor="end">${g}s</text>`;
+    d.forEach((e, i) => {
+      const x = pad + i * bw + 1, w = Math.max(bw - 2, 1), other = e.total_s - e.bronze_s - e.silver_s;
+      const t1 = `${e.first_day}: ${fmt(e.bronze_rows)} rows in, ${fmt(e.silver_inserted)} inserted, ${e.total_s}s`;
+      svg += `<g data-tip="${esc(t1)}"><rect x="${x}" y="${y(e.bronze_s)}" width="${w}" height="${H - 22 - y(e.bronze_s)}" fill="var(--bronze)"/>`
+        + `<rect x="${x}" y="${y(e.bronze_s + e.silver_s + other)}" width="${w}" height="${y(e.bronze_s) - y(e.bronze_s + e.silver_s + other)}" fill="var(--silver)"/><rect x="${x}" y="0" width="${w}" height="${H - 22}" fill="transparent"/></g>`;
+    });
+    svg += `<text x="${pad}" y="${H - 6}">${d[0].first_day}</text><text x="${W}" y="${H - 6}" text-anchor="end">${d[d.length - 1].first_day}</text></svg>`;
+    $("#runchart").innerHTML = svg;
+    $("#runcap").textContent = `History up to ${bf.last_day} arrived as one backfill (${fmt(bf.bronze_rows)} rows, ${bf.total_s}s). Each of the ${d.length} later days ran on its own: median ${runs.daily_median_s}s, p95 ${runs.daily_p95_s}s. Replaying the last ${runs.replay.days} days inserted ${runs.replay.silver_inserted} rows.`;
+    $("#incr").innerHTML = B ? `<div class="ba"><div><b>${B.full_rebuild.seconds}s</b><span>full rebuild of silver (${fmt(B.full_rebuild.rows)} rows)</span></div><div class="after"><b>${B.incremental_day_median_s}s</b><span>one day, incremental (median)</span></div></div><p class="cap" style="margin:0">${pct(B.incremental_saving, 0)} less work per daily load, and the gap grows with history, since a rebuild re-reads everything while MERGE only touches the affected month partitions.</p>` : `<p class="cap">Run with benchmarks to fill this in.</p>`;
+
+    // DQ
+    const dq = R.data_quality;
+    $("#dqcap").textContent = `${runs.daily.length + 2} batches (backfill, daily, replay). Critical checks passed in every batch.`;
+    $("#dq").innerHTML = `<thead><tr><th>Check</th><th>Severity</th><th>Passed</th><th>Avg value</th><th>Limit</th></tr></thead><tbody>${dq.map(c => `<tr><td>${esc(c.check)}</td><td><span class="pill ${c.severity === "critical" ? "crit" : "warn"}">${c.severity}</span></td><td>${c.passed}/${c.batches}</td><td>${c.check.startsWith("every input row") ? "in = out" : c.check.includes("share") ? pct(c.avg_value) : fmt(c.avg_value)}</td><td>${c.check.startsWith("every input row") ? "exact" : c.check.includes("share") ? pct(c.threshold, 0) : fmt(c.threshold)}</td></tr>`).join("")}</tbody>`;
+    const caught = [["exact duplicate lines", dup], ...Object.entries(q)];
+    const mx = Math.max(...caught.map(c => c[1]), 1);
+    $("#caught").innerHTML = caught.map(([k, v]) => `<div class="fi"><span>${esc(k)}</span><span class="bar"><i style="width:${v / mx * 100}%;background:var(--silver)"></i></span><span class="v">${fmt(v)}</span></div>`).join("") +
+      `<p class="cap" style="margin:12px 0 0">Also flagged (kept, not dropped): ${fmt(R.dataset.return_lines)} return lines and ${fmt(R.dataset.anonymous_lines)} lines with no customer ID (${pct(R.dataset.anonymous_lines / t.silver, 0)}); gold uses neither for features.</p>`;
+
+    // Z-order
+    if (z) {
+      $("#zsub").textContent = `Frequent small writes leave a table as many small, unordered files, so a lookup for one customer has to open most of them. The benchmark copies silver ${z.copies}× with offset customer IDs (${fmt(z.rows)} rows, ${z.before.files} files), runs ${z.queries} single-customer lookups, then compacts and Z-orders by customer ID and runs them again.`;
+      $("#zorder").innerHTML = `<div class="scroll"><table class="t"><thead><tr><th></th><th>Files in table</th><th>Files read / lookup</th><th>MB read / lookup</th><th>Median lookup</th><th>p95 lookup</th></tr></thead><tbody>
+        <tr><td>Before (many small files)</td><td>${fmt(z.before.files)}</td><td>${z.before.median_files_read}</td><td>${z.before.median_mb_read}</td><td>${z.before.median_ms} ms</td><td>${z.before.p95_ms} ms</td></tr>
+        <tr class="best"><td>After OPTIMIZE ZORDER BY (customer_id)</td><td>${fmt(z.after.files)}</td><td>${z.after.median_files_read}</td><td>${z.after.median_mb_read}</td><td>${z.after.median_ms} ms</td><td>${z.after.p95_ms} ms</td></tr></tbody></table></div>
+        <p class="cap" style="margin:12px 0 0">OPTIMIZE took ${z.optimize_seconds}s. Data skipping uses the per-file min/max statistics that Delta keeps for each column; Z-ordering makes each file cover a narrow range of customer IDs, so most files can be skipped without being opened.</p>`;
+    }
+
+    // model
+    $("#msub").textContent = `A customer "churns" at a snapshot date if they don't buy anything in the next 90 days. Snapshots are monthly; the model is trained on March–July 2011, chosen on August, and tested once on September (${fmt(T.n)} customers, ${pct(T.base_rate, 0)} of whom churned).`;
+    $("#testcap").textContent = `Top 10% / 20% = the customers a retention team would contact first.`;
+    const rows = ["recency_rule", "logistic_regression", "gradient_boosted_trees"];
+    $("#mtab").innerHTML = `<thead><tr><th>Model</th><th>ROC AUC</th><th>PR AUC</th><th>Precision, top 10%</th><th>Lift, top 10%</th><th>Churners found, top 20%</th></tr></thead><tbody>${rows.map(k => { const m = M.results[k].test; return `<tr class="${k === best ? "best" : ""}"><td>${esc(NAMES[k])}${k === best ? " ✓" : ""}</td><td>${m.roc_auc.toFixed(3)}</td><td>${m.pr_auc.toFixed(3)}</td><td>${pct(m.precision_top10)}</td><td>${m.lift_top10}×</td><td>${pct(m.recall_top20)}</td></tr>`; }).join("")}</tbody>`;
+
+    const gW = 360, gH = 240, gp = 34;
+    const gx = v => gp + v * (gW - gp - 8), gy = v => gH - 24 - v * (gH - 36);
+    const path = pts => "M" + [[0, 0], ...pts.map(p => [p.top_share, p.captured_churners])].map(([a, b]) => `${gx(a).toFixed(1)},${gy(b).toFixed(1)}`).join("L");
+    let gs = `<svg class="chart" viewBox="0 0 ${gW} ${gH}" role="img" aria-label="Cumulative gains chart">`;
+    for (let v = 0; v <= 1.001; v += 0.25) gs += `<line class="grid" x1="${gp}" x2="${gW - 8}" y1="${gy(v)}" y2="${gy(v)}"/><text x="${gp - 6}" y="${gy(v) + 4}" text-anchor="end">${Math.round(v * 100)}%</text><text x="${gx(v)}" y="${gH - 8}" text-anchor="middle">${Math.round(v * 100)}%</text>`;
+    gs += `<path d="M${gx(0)},${gy(0)}L${gx(1)},${gy(1)}" stroke="var(--line-2)" stroke-dasharray="4 4" fill="none" stroke-width="1.5"/>`;
+    gs += `<path d="${path(M.lift_curve.recency_rule)}" stroke="var(--silver)" fill="none" stroke-width="2"/>`;
+    gs += `<path d="${path(M.lift_curve.model)}" stroke="var(--gold)" fill="none" stroke-width="2.5"/>`;
+    M.lift_curve.model.forEach(p => gs += `<circle cx="${gx(p.top_share)}" cy="${gy(p.captured_churners)}" r="7" fill="transparent" data-tip="top ${Math.round(p.top_share * 100)}%: ${pct(p.captured_churners)} of churners"/>`);
+    $("#gains").innerHTML = gs + `</svg>`;
+
+    const fi = M.feature_importance || {};
+    const fe = Object.entries(fi).slice(0, 10), fmx = Math.max(...fe.map(e => Math.abs(e[1])), 1e-9);
+    $("#ficap").textContent = best === "gradient_boosted_trees" ? "Gradient-boosted trees feature importance (share of total split gain)." : "Standardised logistic-regression coefficients.";
+    $("#fi").innerHTML = fe.map(([k, v]) => `<div class="fi"><span>${esc(FEAT[k] || k)}</span><span class="bar"><i style="width:${Math.abs(v) / fmx * 100}%"></i></span><span class="v">${v.toFixed(3)}</span></div>`).join("");
+
+    const sn = labelled.map(k => [k, R.gold.snapshots[k]]);
+    const sW = 360, sH = 190, sp = 30, sbw = (sW - sp) / sn.length;
+    let ss = `<svg class="chart" viewBox="0 0 ${sW} ${sH}" role="img" aria-label="Churn rate by snapshot">`;
+    const sy = v => sH - 24 - v * (sH - 36);
+    for (let v = 0; v <= 0.75; v += 0.25) ss += `<line class="grid" x1="${sp}" x2="${sW}" y1="${sy(v)}" y2="${sy(v)}"/><text x="${sp - 5}" y="${sy(v) + 4}" text-anchor="end">${v * 100}%</text>`;
+    sn.forEach(([k, s], i) => { const x = sp + i * sbw + 6, w = sbw - 12; const role = i < sn.length - 2 ? "train" : i === sn.length - 2 ? "validation" : "test";
+      ss += `<rect x="${x}" y="${sy(s.churn_rate)}" width="${w}" height="${sH - 24 - sy(s.churn_rate)}" rx="3" fill="${role === "test" ? "var(--gold)" : role === "validation" ? "var(--accent)" : "var(--silver)"}" data-tip="${k} (${role}): ${fmt(s.customers)} customers, ${pct(s.churn_rate)} churned"/><text x="${x + w / 2}" y="${sH - 8}" text-anchor="middle">${k.slice(5, 7)}/${k.slice(2, 4)}</text>`; });
+    $("#snaps").innerHTML = ss + `</svg><div class="key" style="margin-top:6px"><span><i style="background:var(--silver)"></i>train</span><span><i style="background:var(--accent)"></i>validation</span><span><i style="background:var(--gold)"></i>test</span></div>`;
+
+    $("#riskcap").textContent = `Scored as of ${M.at_risk_customers[0]?.snapshot_date} (the day after the last transaction), ${fmt(M.scored_customers)} customers in gold.churn_scores. Top 25 shown.`;
+    $("#risk").innerHTML = `<thead><tr><th>Customer</th><th>Churn risk</th><th>Days since last order</th><th>Orders</th><th>Total spend</th><th>Orders, last 90d</th></tr></thead><tbody>${M.at_risk_customers.map(c => `<tr><td class="mono">#${c.customer_id}</td><td class="risk">${pct(c.churn_probability)}</td><td>${fmt(c.recency_days)}</td><td>${fmt(c.frequency)}</td><td>£${fmt(Math.round(c.monetary))}</td><td>${fmt(c.orders_90d)}</td></tr>`).join("")}</tbody>`;
+  }).catch(e => { $("#stats").innerHTML = `<p class="sub">Couldn't load results.json (${esc(e.message)}).</p>`; });
+})();
+</script>
+</body>
+</html>
