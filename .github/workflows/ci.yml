@@ -1,0 +1,48 @@
+name: ci
+on: [push, pull_request, workflow_dispatch]
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - uses: actions/setup-java@v4
+        with: {distribution: temurin, java-version: "17"}
+      - run: pip install -r requirements-dev.txt
+      - run: pytest -q     # Spark fetches the Delta jars from Maven Central
+
+  pipeline:
+    # The whole lakehouse from the raw download on a fresh Spark: backfill, 34 daily MERGEs, replay,
+    # gold, model, benchmarks. Fails if row counts, data-quality results or model metrics differ from the
+    # published results (timings are hardware-dependent and not compared).
+    runs-on: ubuntu-24.04
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - uses: actions/setup-java@v4
+        with: {distribution: temurin, java-version: "17"}
+      - run: pip install -r requirements.txt
+      - run: python -m scripts.prepare_data
+      - run: python -m scripts.run_pipeline
+      - name: Published results must reproduce
+        run: |
+          python - <<'PY'
+          import json, subprocess
+          new = json.load(open("results/results.json"))
+          old = json.loads(subprocess.check_output(["git", "show", "HEAD:results/results.json"]))
+          assert new["tables"] == old["tables"], (new["tables"], old["tables"])
+          assert new["quarantine_reasons"] == old["quarantine_reasons"]
+          assert new["gold"]["snapshots"] == old["gold"]["snapshots"]
+          for m in old["model"]["results"]:
+              a, b = new["model"]["results"][m]["test"]["roc_auc"], old["model"]["results"][m]["test"]["roc_auc"]
+              print(f"{m:24s} published AUC {b:.4f}  reproduced {a:.4f}")
+              assert abs(a - b) <= 0.01, f"{m} AUC drifted"
+          assert all(c["passed"] == c["batches"] for c in new["data_quality"] if c["severity"] == "critical")
+          print("tables, quality results, gold snapshots and model metrics reproduce")
+          PY
+      - uses: actions/upload-artifact@v4
+        with: {name: results, path: results/results.json}
