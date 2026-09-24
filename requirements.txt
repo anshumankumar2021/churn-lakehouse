@@ -1,0 +1,9 @@
+pyspark==4.0.1
+delta-spark==4.0.1
+mlflow-skinny==3.16.1
+SQLAlchemy==2.0.54
+alembic==1.20.0
+pyreadr==0.5.6
+pandas==3.0.6
+pyarrow==25.0.1
+numpy==2.4.6

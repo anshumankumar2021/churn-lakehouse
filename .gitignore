@@ -1,0 +1,10 @@
+__pycache__/
+.pytest_cache/
+.venv*/
+data/
+mlruns/
+models/
+spark-warehouse/
+metastore_db/
+derby.log
+.vercel
